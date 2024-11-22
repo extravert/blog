@@ -5,7 +5,7 @@ import { validate } from 'uuid';
 const blogs = Router();
 
 // 添加博客接口
-blogs.post('/add', async (req, res) => {
+blogs.post('/_token/add', async (req, res) => {
     let { title, category_id, content } = req.body;
     let id = genid.NextId();
     let create_time = new Date().getTime()
@@ -27,7 +27,7 @@ blogs.post('/add', async (req, res) => {
 })
 
 // 修改博客
-blogs.post('/update', async (req, res) => {
+blogs.post('/_token/update', async (req, res) => {
     let { id, title, category_id, content } = req.body;
     let create_time = new Date().getTime()
     let blog_update = "update blog set title = ?, category_id = ?, content = ? where id = ?"
@@ -47,7 +47,7 @@ blogs.post('/update', async (req, res) => {
 })
 
 // 删除博客
-blogs.delete('/delete', async (req, res) => {
+blogs.delete('/_token/delete', async (req, res) => {
     let id = req.query.id
     let delete_sql = 'delete from blog where id = ?'
     let {err, rows} = await db.async.run(delete_sql, [id])
@@ -67,7 +67,7 @@ blogs.delete('/delete', async (req, res) => {
 })
 
 // 查询博客 实现一个关键字 查询 分页查询
-blogs.get("/search", async (req, res) => {
+blogs.get("/_token/search", async (req, res) => {
     /**
      * keyword
      * category_id
