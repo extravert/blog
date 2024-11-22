@@ -1,6 +1,10 @@
 import router from './router/route.js';
 import express from 'express';
 import multer from 'multer';
+import category from './router/category.js';
+import blogs from './router/bolgs.js';
+import uploads from './router/upload.js'
+import path from 'path';
 
 // const express = require('express');
 const app = express();
@@ -27,6 +31,10 @@ const upload = multer({
 // 解析文件上传的请求 为什么用any ？？？ 上传文件的时候，会有一个filedName，如果不指定，就是默认的file 如果指定了，就是指定的字段名
 app.use(upload.any());
 app.use(router);
+app.use('/category', category)
+app.use('/blogs', blogs)
+app.use("/uploads", uploads)
+app.use(express.static(path.join(process.cwd(), 'public')))  // public 声明为静态文件可调用
 
 app.get('/', (req, res) => {
   res.send('Hello World');

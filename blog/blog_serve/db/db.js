@@ -9,14 +9,13 @@ import genId from '../utils/snowFlake.js';
 
 const dbPath = path.join(process.cwd(), './db/blog.sqlite3');  // 这是es6的用法 因为文档用了es模块
 
-// const db = new sqlite3.Database(dbPath, (err) => {
-//     if (err) {
-//         console.error('Error opening database ' + err.message);
-//     } else {
-//         console.log('Database path:', dbPath);
-//         console.log('Connected to the SQLite database.');
-//     }
-// });
+const db = new sqlite3.Database(dbPath, (err) => {
+    if (err) {
+        console.error('Error opening database ' + err.message);
+    } else {
+        console.log('Connected to the SQLite database.');
+    }
+});
 const genid = new genId({ WorkerId: 1 });
 
 db.async = []
