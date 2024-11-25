@@ -29,32 +29,33 @@ category.post('/_token/add', async (req, res) => {
     if (err == null) {
         res.send({
             code: 200,
-            msg: 'request success',
+            msg: 'add success!',
             rows
         })
     } else {
         res.send({
             code: 500,
-            msg: 'request failure'
+            msg: 'add fail!'
         })
     }
 })
 
 // 请求接口 列表查询
 category.get('/list', async (req, res) => {
-    let { token } = req.headers;
+    // 修改请求列表不需要token了
+    // let { token } = req.headers;
     
-    let token_sql = "select * from admin where token = ?"
-    let admin_result  = await db.async.all(token_sql, [token])
+    // let token_sql = "select * from admin where token = ?"
+    // let admin_result  = await db.async.all(token_sql, [token])
     
-    console.log(admin_result)
-    if (admin_result.err != null || admin_result.rows.length == 0) {
-        res.send({
-            code: 403,
-            msg: 'please login!',
-        })
-        return
-    }
+    // console.log(admin_result)
+    // if (admin_result.err != null || admin_result.rows.length == 0) {
+    //     res.send({
+    //         code: 403,
+    //         msg: 'please login!',
+    //     })
+    //     return
+    // }
 
     let get_sql = 'select * from category'
     let {err, rows} = await db.async.all(get_sql, [])
@@ -82,13 +83,13 @@ category.delete('/_token/delete', async (req, res) => {
     if (err == null) {
         res.send({
             code: 200,
-            msg: 'request success',
+            msg: 'delete success',
             rows
         })
     } else {
         res.send({
             code: 500,
-            msg: 'request failure'
+            msg: 'delete fail'
         })
     }
 })
@@ -102,12 +103,12 @@ category.put('/_token/update', async (req, res) => {
     if (err == null) {
         res.send({
             code: 200,
-            msg: 'request success',
+            msg: 'update success!',
         })
     } else {
         res.send({
             code: 500,
-            msg: 'request failure'
+            msg: 'update fail!'
         })
     }
 })

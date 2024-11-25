@@ -17,17 +17,21 @@
     </div>
 </template>
 <script setup>
+
 import { ref, reactive, inject } from "vue";
 import {AdminStore} from '../stores/AdminStore'
+
+import { router, routes } from '../router/router'
+
 const axios = inject("axios")  // 名称和前面provide里面的字符串一致
 const message = inject("message")  // 注入message
 
 
 const adminStore = AdminStore()
 const admin = reactive({
-    account: "",
-    password: "",
-    remember: false
+    account: localStorage.getItem("account") || "",  // 如果登录了且记住了这里应该是取记住的值
+    password: localStorage.getItem("password") || "",
+    remmber: localStorage.getItem("remmber") || false
 })
 let rules = {
     account: [
@@ -35,7 +39,7 @@ let rules = {
         { min: 3, max: 12, message: "length from 3 to 12", trigger: "blur" }
     ],
     password: [
-        { required: true, message: "please input account!", trigger: "blur" },
+        { required: true, message: "please input password!", trigger: "blur" },
         { min: 6, max: 18, message: "length from 6 to 18", trigger: "blur" }
     ]
 }
@@ -51,6 +55,15 @@ const login = async () => {
         adminStore.token = data.data.token,
         adminStore.account = data.data.account,
         adminStore.id = data.id
+
+        //登录成功之后如果选择记住则保存登录信息
+        if (admin.remmber) {
+            localStorage.setItem("account", admin.account);
+            localStorage.setItem("password", admin.password);
+            localStorage.setItem("remmber", admin.remmber ? 1 : 0);
+        }
+        router.push('/dashboard')
+
     } else {
         message.error("login fail")
     }
