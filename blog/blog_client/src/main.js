@@ -22,6 +22,9 @@ app.use(naive)
 app.use(pinia)
 app.use(router)
 
+// 导出IP地址
+app.provide("server_url", axios.defaults.baseURL)
+
 const adminStore = AdminStore()
 // 添加路由拦截器 自动给路由添加请求参数 不需要单独添加
 axios.interceptors.request.use((config) => {

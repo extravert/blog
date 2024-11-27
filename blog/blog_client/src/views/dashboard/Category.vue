@@ -83,6 +83,7 @@ const loadDatas = async () => {
     // console.log(res)
     categories.value = res.data.rows  // 需要使用value
 }
+
 const add = async () => {
     let res = await axios.post('/category/_token/add', { name: addCategory.name })
     console.log(res)
@@ -108,7 +109,7 @@ const update = async () => {
         loadDatas();
         message.success(res.data.msg)
     } else {
-        message.fail(res.data.msg)
+        message.error(res.data.msg)
     }
     showEditModal.value = false;
 }
@@ -122,7 +123,7 @@ const deleteCategory = async (category) => {
         onPositiveClick: async () => {
             // 下面是传body的形式删除
             // let res = await axios.delete('/category/_token/delete', { id: category.id })
-            // 下面是传query的方式 注意反引号
+            // 下面是传query的方式 注意反引号 问号就是拼接url的意思
             let res = await axios.delete(`/category/_token/delete?id=${category.id}`)
             console.log(res)
             if (res.data.code == 200) {

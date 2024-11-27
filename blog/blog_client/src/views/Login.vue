@@ -29,6 +29,7 @@ const message = inject("message")  // 注入message
 
 const adminStore = AdminStore()
 const admin = reactive({
+    // 这里还有个重要的原因 就是登录之后会在页面直接显示出来用户名和密码 因为这是响应式的
     account: localStorage.getItem("account") || "",  // 如果登录了且记住了这里应该是取记住的值
     password: localStorage.getItem("password") || "",
     remmber: localStorage.getItem("remmber") || false
