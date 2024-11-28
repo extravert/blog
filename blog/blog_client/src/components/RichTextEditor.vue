@@ -69,7 +69,7 @@ onBeforeUnmount(() => {
 // 模拟 ajax 异步获取内容
 onMounted(() => {
     setTimeout(() => {
-        valueHtml.value = 'hello 异步获取默认值';
+        valueHtml.value = '异步获取默认值';
     }, 100);
 });
 

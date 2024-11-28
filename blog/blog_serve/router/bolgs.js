@@ -103,7 +103,8 @@ blogs.get("/_token/search", async (req, res) => {
     }
 
     // 查分页数据
-    let search_sql = " select * from blog " + where_sql + " order by create_time desc limit ?,? "
+    // 服务器处理返回数据 前50个字符 注意重命名content
+    let search_sql = " select `id`, `category_id`, `title`, `create_time`, substr(`content`, 0, 50) as content from blog " + where_sql + " order by create_time desc limit ?,? "
     let search_params = params.concat([(page - 1) * page_size, page_size])  // 需要拼接上limit的参数
 
     // 查数据总数
