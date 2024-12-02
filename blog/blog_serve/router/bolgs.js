@@ -1,8 +1,29 @@
-import { Router } from 'express'; 
-import {db, genid} from '../db/db.js';
+import { Router } from 'express';
+import { db, genid } from '../db/db.js';
 import { validate } from 'uuid';
 
 const blogs = Router();
+
+// 补充查询单篇文章的详情接口
+blogs.get('/detail', async (req, res) => {
+    let id = req.query.id  // 这里写成 {id} 都会报错
+    let detail_sql = 'select * from blog where id = ?'
+    let { err, rows } = await db.async.all(detail_sql, [id])
+
+    if (err == null) {
+        res.send({
+            code: 200,
+            msg: "query success",
+            rows
+        })
+    } else {
+        res.send({
+            code: 500,
+            msg: "query fail"
+        })
+    }
+
+})
 
 // 添加博客接口
 blogs.post('/_token/add', async (req, res) => {
@@ -13,7 +34,7 @@ blogs.post('/_token/add', async (req, res) => {
 
     let { err, rows } = await db.async.run(blog_add, [id, title, category_id, content, create_time])
 
-    if(err == null) {
+    if (err == null) {
         res.send({
             code: 200,
             msg: "add success"
@@ -27,13 +48,13 @@ blogs.post('/_token/add', async (req, res) => {
 })
 
 // 修改博客
-blogs.post('/_token/update', async (req, res) => {
+blogs.put('/_token/update', async (req, res) => {
     let { id, title, category_id, content } = req.body;
     let create_time = new Date().getTime()
     let blog_update = "update blog set title = ?, category_id = ?, content = ? where id = ?"
     let { err, rows } = await db.async.run(blog_update, [title, category_id, content, id])
 
-    if(err == null) {
+    if (err == null) {
         res.send({
             code: 200,
             msg: "update success"
@@ -50,8 +71,8 @@ blogs.post('/_token/update', async (req, res) => {
 blogs.delete('/_token/delete', async (req, res) => {
     let id = req.query.id
     let delete_sql = 'delete from blog where id = ?'
-    let {err, rows} = await db.async.run(delete_sql, [id])
-    
+    let { err, rows } = await db.async.run(delete_sql, [id])
+
     if (err == null) {
         res.send({
             code: 200,
@@ -86,7 +107,7 @@ blogs.get("/_token/search", async (req, res) => {
     let where_sqls = []  // 查询条件集
 
     // 判断是否需要按类别查询
-    if(category_id) {
+    if (category_id) {
         where_sqls.push(" category_id = ? ")  // 注意这里面有个空格
         params.push(category_id)
     }

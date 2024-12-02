@@ -9,7 +9,7 @@
 
 <script setup>
 import '@wangeditor/editor/dist/css/style.css';
-import { ref, reactive, shallowRef, inject, onBeforeUnmount, onMounted } from "vue";
+import { ref, reactive, shallowRef, inject, onBeforeUnmount, onMounted, watch, version, VueElement, watchEffect } from "vue";
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue';
 
 // 这个应该是用来组件传值的
@@ -56,7 +56,7 @@ editorConfig.MENU_CONF['insertImage'] = {
 
 
 // v-model双绑定的也要用响应式
-const valueHtml = ref("132132")  // 这里设置默认值是没有显示的 文档中提到了是异步获取的方式
+const valueHtml = ref()  // 这里设置默认值是没有显示的 文档中提到了是异步获取的方式
 
 // 组件销毁时，也及时销毁编辑器，重要！
 onBeforeUnmount(() => {
@@ -67,11 +67,16 @@ onBeforeUnmount(() => {
 });
 
 // 模拟 ajax 异步获取内容
-onMounted(() => {
-    setTimeout(() => {
-        valueHtml.value = '异步获取默认值';
-    }, 100);
-});
+// onMounted(() => {
+//     setTimeout(() => {
+//         valueHtml.value = '异步获取默认值';
+//     },100);
+// });
+
+// 监听 modelValue 的变化
+watch(() => {
+    valueHtml.value = props.modelValue
+})
 
 // 编辑器回调函数
 const handleCreated = (editor) => {

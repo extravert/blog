@@ -1,6 +1,7 @@
 <template>
     <div>
-        <n-tabs default-value="list" justify-content="start" type="line">
+        <!-- 这里tabValue可以用来修改默认选中 这是固定用法 -->
+        <n-tabs v-model:value="tabValue" justify-content="start" type="line">
             <n-tab-pane name="list" tab="文章列表">
                 <div v-for="(blog, index) in blogsList" :key="index" style="margin-bottom: 15px;">
                     <n-card :title="blog.title">
@@ -9,7 +10,7 @@
                             <!-- 水平方向上居中对齐 -->
                             <n-space align="center">
                                 <div>发布时间：{{ blog.create_time }}</div>
-                                <n-button>修改</n-button>
+                                <n-button @click="toUpdate(blog)">修改</n-button>
                                 <n-button>删除</n-button>
                             </n-space>
                         </template>
@@ -42,8 +43,21 @@
                     <n-button @click="add">提交</n-button>
                 </n-form-item>
             </n-tab-pane>
-            <n-tab-pane name="jay chou" tab="周杰伦">
-                七里香
+
+            <n-tab-pane name="update" tab="修改文章">
+                <n-form-item label="update">
+                    <n-input v-model:value="updateArtical.title" @keydown.enter.prevent
+                        placeholder="please input title" />
+                </n-form-item>
+                <n-form-item label="category">
+                    <n-select v-model:value="updateArtical.category_id" :options="categoryOptions" />
+                </n-form-item>
+                <n-form-item label="content">
+                    <rich-text-editor v-model="updateArtical.content"></rich-text-editor>
+                </n-form-item>
+                <n-form-item>
+                    <n-button @click="update">提交</n-button>
+                </n-form-item>
             </n-tab-pane>
         </n-tabs>
     </div>
@@ -71,6 +85,14 @@ const pageInfo = reactive({
     count: 0  // 总条数
 })
 
+const tabValue = ref('list')
+const updateArtical = reactive({
+    id: 0,
+    title: "",
+    content: "",
+    category_id: 0
+})
+
 const categoryOptions = ref([])
 onMounted(() => {
     loadCategories(),
@@ -79,6 +101,7 @@ onMounted(() => {
 
 const blogsList = ref([])
 const loadBlogs = async () => {
+    // 模板的形式传值
     let res = await axios.get(`/blogs/_token/search?page=${pageInfo.page}&page_size=${pageInfo.pageSize}`)
     console.log(res)
     let data = res.data.data.rows
@@ -124,6 +147,27 @@ const add = async () => {
     }
     addArtical.title = ''
     addArtical.content = ''
+}
+
+const toUpdate = async (blog) => {
+    tabValue.value = 'update'
+    let res = await axios.get('/blogs/detail?id=' + blog.id)
+    console.log(res)
+    updateArtical.id = blog.id
+    updateArtical.title = res.data.rows[0].title
+    updateArtical.content = res.data.rows[0].content
+    updateArtical.category_id = res.data.rows[0].category_id
+    console.log(updateArtical.content)
+}
+
+const update = async () => {
+    let res = await axios.put('blogs/_token/update', updateArtical)
+    console.log(res)
+    if (res.data.code == 200) {
+        message.success(res.data.msg)
+    } else {
+        message.error(res.data.msg)
+    }
 }
 </script>
 
