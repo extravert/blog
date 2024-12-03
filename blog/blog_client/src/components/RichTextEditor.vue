@@ -9,7 +9,7 @@
 
 <script setup>
 import '@wangeditor/editor/dist/css/style.css';
-import { ref, reactive, shallowRef, inject, onBeforeUnmount, onMounted, watch, version, VueElement, watchEffect } from "vue";
+import { ref, reactive, shallowRef, inject, onBeforeUnmount, onMounted, watchEffect, version, VueElement } from "vue";
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue';
 
 // 这个应该是用来组件传值的
@@ -73,14 +73,15 @@ onBeforeUnmount(() => {
 //     },100);
 // });
 
-// 监听 modelValue 的变化
-watch(() => {
+// 监听 modelValue 的变化 我猜测可能是这个编辑器作者设置的就是异步设置这个值 所以放这里修改
+// 这和视频作者教的是不一样的
+watchEffect(() => {
     valueHtml.value = props.modelValue
 })
 
 // 编辑器回调函数
 const handleCreated = (editor) => {
-    console.log('created', editor);
+    // console.log('created', editor);
     editorRef.value = editor; // 记录 editor 实例，重要！
 };
 const handleChange = (editor) => {

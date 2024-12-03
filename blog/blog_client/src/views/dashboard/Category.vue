@@ -86,7 +86,7 @@ const loadDatas = async () => {
 
 const add = async () => {
     let res = await axios.post('/category/_token/add', { name: addCategory.name })
-    console.log(res)
+    // console.log(res)
     if (res.data.code == 200) {
         message.success(res.data.msg)
         loadDatas()
@@ -104,7 +104,7 @@ const editCategory = (category) => {
 
 const update = async () => {
     let res = await axios.put('/category/_token/update', { id: updateCategory.id, name: updateCategory.name })
-    console.log(res)
+    // console.log(res)
     if (res.data.code == 200) {
         loadDatas();
         message.success(res.data.msg)

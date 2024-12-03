@@ -11,7 +11,7 @@
                             <n-space align="center">
                                 <div>发布时间：{{ blog.create_time }}</div>
                                 <n-button @click="toUpdate(blog)">修改</n-button>
-                                <n-button>删除</n-button>
+                                <n-button @click="toDelete(blog)">删除</n-button>
                             </n-space>
                         </template>
                     </n-card>
@@ -70,6 +70,7 @@ import { paginationDark } from "naive-ui";
 
 const axios = inject("axios")
 const message = inject("message")
+const dialog = inject("dialog")
 // v-model绑定的
 const addArtical = reactive({
     title: "",
@@ -103,7 +104,7 @@ const blogsList = ref([])
 const loadBlogs = async () => {
     // 模板的形式传值
     let res = await axios.get(`/blogs/_token/search?page=${pageInfo.page}&page_size=${pageInfo.pageSize}`)
-    console.log(res)
+    // console.log(res)
     let data = res.data.data.rows
     for (let blog of data) {
         blog.content += '...'  // 超过的部分省略号
@@ -133,13 +134,13 @@ const loadCategories = async () => {
             value: item.id
         }
     })
-    console.log(categoryOptions)
+    // console.log(categoryOptions)
 }
 
 // 直接把隔壁添加分类的add方法复制粘贴就行 改一下参数 做程序就是这样
 const add = async () => {
     let res = await axios.post('/blogs/_token/add', addArtical)
-    console.log(res)
+    // console.log(res)
     if (res.data.code == 200) {
         message.success(res.data.msg)
     } else {
@@ -152,22 +153,46 @@ const add = async () => {
 const toUpdate = async (blog) => {
     tabValue.value = 'update'
     let res = await axios.get('/blogs/detail?id=' + blog.id)
-    console.log(res)
+    // console.log(res)
     updateArtical.id = blog.id
     updateArtical.title = res.data.rows[0].title
-    updateArtical.content = res.data.rows[0].content
+    updateArtical.content = res.data.rows[0].content  // 问题在这里修改的
     updateArtical.category_id = res.data.rows[0].category_id
-    console.log(updateArtical.content)
+    // console.log(updateArtical.content)
 }
 
 const update = async () => {
     let res = await axios.put('blogs/_token/update', updateArtical)
-    console.log(res)
+    // console.log(res)
     if (res.data.code == 200) {
         message.success(res.data.msg)
+        loadBlogs()
+        tabValue.value = 'list'
     } else {
         message.error(res.data.msg)
     }
+}
+
+const toDelete = async (blog) => {
+    dialog.warning({
+        title: '警告',
+        content: '是否删除？',
+        positiveText: '确定',
+        negativeText: '取消',
+        onPositiveClick: async () => {
+            let res = await axios.delete('blogs/_token/delete?id=' + blog.id)
+            // console.log(res)
+            if (res.data.code == 200) {
+                loadBlogs()
+                message.success(res.data.msg)
+            } else {
+                message.error(res.data.msg)
+            }
+        },
+        onNegativeClick: () => {
+            message.success('取消成功！')
+        }
+    })
 }
 </script>
 
