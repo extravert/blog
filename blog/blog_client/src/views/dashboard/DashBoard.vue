@@ -20,6 +20,7 @@ import { router, routes } from '../../router/router'
 
 const adminStore = AdminStore()  // 上面引入只能叫声明了函数 这里要调用才会有里面的对象值
 let menus = [
+    { name: "index", herf: "/" },
     { name: "artical", herf: "/dashboard/artical" },
     { name: "category", herf: "/dashboard/category" },
     { name: "logout", herf: "logout" },
@@ -53,11 +54,13 @@ const toPage = (menu) => {
 
     div {
         cursor: pointer;
+
         &:hover {
             color: #fd7601;
         }
     }
 }
+
 .title {
     font-size: 65px;
     font-weight: bold;
@@ -67,5 +70,4 @@ const toPage = (menu) => {
     right: calc((100vw - 1500px) / 2);
     bottom: 20px;
 }
-
 </style>

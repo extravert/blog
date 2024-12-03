@@ -81,7 +81,7 @@ const addArtical = reactive({
 // 分页0 定义页码相关需要的变量
 const pageInfo = reactive({
     page: 1,  // 当前页码
-    pageSize: 6,  // 每页数
+    pageSize: 4,  // 每页数
     pageCount: 0,  // 总页数
     count: 0  // 总条数
 })
@@ -148,6 +148,7 @@ const add = async () => {
     }
     addArtical.title = ''
     addArtical.content = ''
+    tabValue.value = 'list'
 }
 
 const toUpdate = async (blog) => {
